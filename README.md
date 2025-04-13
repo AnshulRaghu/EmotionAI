@@ -17,9 +17,15 @@ A mobile-first mood tracking and emotional wellness app powered by AI. Built usi
 
 ## ⚙️ Tech Stack
 
-| Frontend        | Backend         | Database     | AI/ML            |
-|-----------------|------------------|--------------|------------------|
-| React Native (Expo) | FastAPI (Python) | MongoDB Atlas | Google Gemini API |
+| Frontend             | Backend           | Database       | AI/ML              |
+|----------------------|-------------------|----------------|--------------------|
+| React Native (Expo)  | FastAPI (Python)  | MongoDB Atlas  | Google Gemini API  |
+
+---
+
+## 🎥 Demo
+
+[Watch a quick demo](https://www.youtube.com/shorts/7bOOyXLMkdc) showing EmotionAI in action.
 
 ---
 
@@ -46,3 +52,44 @@ npx expo start
 cd ../api
 pip install -r requirements.txt
 uvicorn sentiment_api:app --reload
+```
+
+---
+
+## 🔐 Example `.env` File (`api/.env.example`)
+
+```bash
+MONGO_URI=your_mongodb_connection_uri_here
+GEMINI_API_KEY=your_gemini_api_key_here
+```
+
+---
+
+## 📁 Repository Structure
+
+```
+EmotionAI/
+├── api/                  # FastAPI backend
+│   ├── sentiment_api.py
+│   ├── requirements.txt
+│   └── .env.example
+├── app/                  # Expo frontend
+│   ├── App.js
+│   ├── screens/
+│   ├── BASE_URL.js
+│   └── package.json
+├── .gitignore
+└── README.md
+```
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Feel free to open an issue or create a pull request. Please ensure your code follows standard best practices and includes clear commit messages.
+
+---
+
+## 📄 License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
