@@ -6,22 +6,29 @@ from dotenv import load_dotenv
 from fastapi.responses import JSONResponse
 import google.generativeai as genai
 from textblob import TextBlob
+from fastapi.middleware.cors import CORSMiddleware
 
 # Load environment variables
 load_dotenv(dotenv_path=".env")
+
+# Load Gemini API key
 api_key = os.getenv("GOOGLE_API_KEY")
-print("🔑 API Key loaded:", api_key)
+if not api_key:
+    print("❌ No API key found. Please set GOOGLE_API_KEY in .env or environment.")
+else:
+    print("🔑 API Key loaded successfully.")
+    genai.configure(api_key=api_key)
 
-genai.configure(api_key=api_key)
-
-# 📋 List all available models
-print("\n📋 Available models:")
-for m in genai.list_models():
-    print(f"- {m.name}: {m.supported_generation_methods}")
-
-model = genai.GenerativeModel("models/gemini-pro")
-
+# Initialize FastAPI app
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 👈 allows all — for dev only
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Input models
 class MoodRequest(BaseModel):
@@ -34,6 +41,9 @@ class UserInfo(BaseModel):
     age: int
     gender: str
 
+# Initialize Gemini model (you'll fix the name after calling /list-models)
+model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
+
 # Sentiment classifier
 def get_sentiment_label(text: str) -> str:
     polarity = TextBlob(text).sentiment.polarity
@@ -43,6 +53,22 @@ def get_sentiment_label(text: str) -> str:
         return "negative"
     else:
         return "neutral"
+
+# Endpoint to check available models
+@app.get("/list-models")
+def list_models():
+    try:
+        models = genai.list_models()
+        model_list = []
+        for model in models:
+            model_info = {
+                "name": model.name,
+                "generation_methods": model.supported_generation_methods
+            }
+            model_list.append(model_info)
+        return {"available_models": model_list}
+    except Exception as e:
+        return {"error": str(e)}
 
 # Register endpoint
 @app.post("/register")

@@ -3,17 +3,17 @@ import {
   View,
   Text,
   TextInput,
+  TouchableOpacity,
   ActivityIndicator,
   StyleSheet,
   FlatList,
   KeyboardAvoidingView,
   Platform,
-  TouchableOpacity,
   Alert,
   Keyboard,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { BASE_URL } from './BASE_URL';
+import { BASE_URL } from '../BASE_URL';
 
 export default function MoodTrackerScreen() {
   const [text, setText] = useState('');
@@ -48,21 +48,15 @@ export default function MoodTrackerScreen() {
 
   const analyzeText = async () => {
     Keyboard.dismiss();
-    console.log("Analyze Mood clicked!");
 
     if (!text || !sessionId || !userAge || !userGender) {
-      Alert.alert("Missing user data or input.");
+      Alert.alert('Missing user data or input.');
       return;
     }
 
-    console.log("Sending to backend:", {
-      mood: text,
-      age: userAge,
-      gender: userGender,
-      session_id: sessionId,
-    });
-
     setLoading(true);
+    setResult(null);
+
     try {
       const res = await fetch(`${BASE_URL}/generate-response/`, {
         method: 'POST',
@@ -76,18 +70,15 @@ export default function MoodTrackerScreen() {
       });
 
       const data = await res.json();
-      console.log("Gemini Response:", data);
-
       if (data.message) {
         setResult(data);
       } else {
-        console.warn("No message returned:", data);
+        console.warn('No message returned:', data);
       }
-
       setText('');
     } catch (err) {
-      console.error("Analyze Mood error:", err);
-      Alert.alert("Something went wrong! Check your connection and try again.");
+      console.error('Analyze Mood error:', err);
+      Alert.alert('Something went wrong! Check your connection and try again.');
     } finally {
       setLoading(false);
     }
@@ -95,8 +86,8 @@ export default function MoodTrackerScreen() {
 
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={styles.wrapper}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={styles.container}>
         <Text style={styles.header}>🧠 Journal your thoughts</Text>
@@ -140,17 +131,15 @@ export default function MoodTrackerScreen() {
               keyExtractor={(item) => item._id}
               contentContainerStyle={{ gap: 10 }}
               renderItem={({ item }) => (
-                <TouchableOpacity activeOpacity={0.8}>
-                  <View
-                    style={[
-                      styles.bubble,
-                      {
-                        backgroundColor:
-                          item.emotion === 'Happy' ? '#75E6A6' : '#76B3F0',
-                      },
-                    ]}
-                  />
-                </TouchableOpacity>
+                <View
+                  style={[
+                    styles.bubble,
+                    {
+                      backgroundColor:
+                        item.emotion === 'Happy' ? '#75E6A6' : '#76B3F0',
+                    },
+                  ]}
+                />
               )}
             />
           </View>
@@ -161,7 +150,7 @@ export default function MoodTrackerScreen() {
 }
 
 const styles = StyleSheet.create({
-  wrapper: { flex: 1, backgroundColor: '#F9F9F9' },
+  wrapper: { flex: 1, backgroundColor: '#F4F7FF' },
   container: { flex: 1, padding: 20, paddingTop: 60 },
   header: { fontSize: 24, fontWeight: 'bold', marginBottom: 20 },
   card: {
@@ -169,10 +158,10 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 16,
     shadowColor: '#000',
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.06,
     shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 12,
-    elevation: 4,
+    shadowRadius: 10,
+    elevation: 3,
   },
   input: {
     borderColor: '#ddd',
@@ -200,11 +189,6 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 16,
     backgroundColor: '#E6E9F7',
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowOffset: { width: 0, height: 3 },
-    shadowRadius: 10,
-    elevation: 3,
   },
   resultText: {
     fontSize: 18,

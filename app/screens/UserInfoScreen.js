@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Picker } from '@react-native-picker/picker';
-import { BASE_URL } from './BASE_URL';
+import { BASE_URL } from '../BASE_URL';
 
 export default function UserInfoScreen({ navigation }) {
   const [age, setAge] = useState('');
@@ -21,18 +21,7 @@ export default function UserInfoScreen({ navigation }) {
         body: JSON.stringify({ age: parseInt(age), gender })
       });
 
-      const raw = await res.text();
-      console.log("Raw response:", raw);
-
-      let data;
-      try {
-        data = JSON.parse(raw);
-      } catch (e) {
-        Alert.alert("Failed to parse response", raw);
-        return;
-      }
-
-      console.log("Parsed session_id:", data.session_id);
+      const data = await res.json();
 
       if (data.session_id) {
         await AsyncStorage.setItem('session_id', data.session_id);
