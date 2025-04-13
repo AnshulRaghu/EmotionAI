@@ -1,0 +1,41 @@
+# Node / React Native / Expo
+node_modules/
+.expo/
+.expo-shared/
+dist/
+web-build/
+expo-env.d.ts
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+.metro-health-check*
+
+# Native build keys
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Python
+__pycache__/
+*.py[cod]
+*.pyc
+*.pyo
+*.pyd
+
+# macOS
+.DS_Store
+*.pem
+
+# Env + secrets
+.env
+.env.local
+.env*.local
+
+# TypeScript
+*.tsbuildinfo
+
+# VSCode
+.vscode/
